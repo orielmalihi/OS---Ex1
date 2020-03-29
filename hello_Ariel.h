@@ -8,6 +8,6 @@
 #ifndef HELLO_ARIEL_H_
 #define HELLO_ARIEL_H_
 
-void print_hello();
+void print_hello(char* name);
 
 #endif /* HELLO_ARIEL_H_ */
