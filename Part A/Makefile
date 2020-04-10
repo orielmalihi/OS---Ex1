@@ -7,19 +7,19 @@ FLAGS = -Wall -g
 # $< - the first name in the dependencies list
 # $^ - the right side of :
 
-all: slib dlib task1 main1_2.out main1_3.out 
+all: slib dlib task1 task2 task3 
 slib: libhello.a
 dlib: libhello.so
 libhello.a: $(OBJECTS_LIB)
 	$(AR) -rcs libhello.a $^ 
 libhello.so: $(OBJECTS_LIB)
 	$(CC) -shared -o libhello.so $^
-main1_1.out: main1_1.o hello_Ariel.o
+task1: main1_1.o hello_Ariel.o
 	$(CC) $(FLAGS) -o $@ $^	-I.
-main1_2.out: main1_1.o libhello.a
+task2: main1_1.o libhello.a
 	$(CC) $(FLAGS) -o $@ $^ -I.
-main1_3.out: main1_3.o libhello.so
-	$(CC) $(FLAGS)  -o main1_3.out main1_3.o ./libhello.so -I. -ldl
+task3: main1_3.o libhello.so
+	$(CC) $(FLAGS)  -o task3 main1_3.o ./libhello.so -I. -ldl
 main1_1.o: main1_1.c hello_Ariel.h
 	$(CC) $(FLAGS) -c -o $@ $< -I.
 main1_3.o: main1_3.c hello_Ariel.h
@@ -30,4 +30,4 @@ hello_Ariel.o: hello_Ariel.c
 .PHONY: clean all
 	
 clean:
-	rm -f *.o *.a *.so *.out
+	rm -f *.o *.a *.so task*
