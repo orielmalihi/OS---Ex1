@@ -1,39 +1,40 @@
 #include <unistd.h>
-#include <sys/types.h>
-#include <errno.h>
+#include <syslog.h>
 #include <stdio.h>
-#include <sys/wait.h>
 #include <stdlib.h>
 
-int var_glb; /* A global variable*/
 
 int main(void)
 {
-    pid_t childPID;
-    int var_lcl = 0;
+	// creating the child that will be the deamon
+	pid_t daemonPID = fork();
 
-    childPID = fork();
+	if(daemonPID == 0){
+		// are in thh child
+		
+		//moving to root directory
+		chdir("/");
 
-    if(childPID >= 0) // fork was successful
-    {
-        if(childPID == 0) // child process
-        {
-            var_lcl++;
-            var_glb++;
-            printf("\n Child Process :: var_lcl = [%d], var_glb[%d]\n", var_lcl, var_glb);
-        }
-        else //Parent process
-        {
-            var_lcl = 10;
-            var_glb = 20;
-            printf("\n Parent process :: var_lcl = [%d], var_glb[%d]\n", var_lcl, var_glb);
-        }
-    }
-    else // fork failed
-    {
-        printf("\n Fork failed, quitting!!!!!!\n");
-        return 1;
-    }
+		//moving the procces to another session so we can close the parent procces
+		setsid();
 
-    return 0;
+		printf("\nthe daemon is now starting..\n");
+
+		// closing the output channels
+		close((intptr_t)stdout);
+		close((intptr_t)stdin);
+		close((intptr_t)stderr);
+
+		// opening log
+		openlog("myDaemon", LOG_PID, LOG_DAEMON);
+		syslog(LOG_NOTICE, "daemon started");
+		usleep(3000000);
+		syslog(LOG_NOTICE, "daemon is doing some work..");
+		usleep(3000000);
+		syslog(LOG_NOTICE, "daemon finished");
+	}
+	else{
+		printf("deamon PID = %d\n", daemonPID);
+	}
+	return 0;
 }

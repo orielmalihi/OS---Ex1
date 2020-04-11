@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define STACK_SIZE 10000
-#define CYCLES 1000
+#define CYCLES 20
 
 // global var
 char child_stack[STACK_SIZE + 1];
